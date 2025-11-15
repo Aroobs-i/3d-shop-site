@@ -59,12 +59,13 @@ const Customizer = () => {
         body: JSON.stringify({
           prompt,
         })
-      })
+      });
 
       const data = await response.json();
-      handleDecals(type, `data:image/png;base64,${data.photo}`)
+      handleDecals(type, `data:image/png;base64,${data.photo}`);
+
     } catch (error) {
-      alert(error)
+      alert(error);
     } finally {
       setGeneratingImg(false);
       setActiveEditorTab("");
@@ -77,7 +78,7 @@ const Customizer = () => {
     state[decalType.stateProperty] = result;
 
     if(!activeFilterTab[decalType.filterTab]) {
-      handleActiveFilterTab(decalType.filterTab)
+      handleActiveFilterTab(decalType.filterTab);
     }
   }
 
@@ -155,7 +156,7 @@ const Customizer = () => {
                  key={tab.name}
                  tab={tab}
                  isFilterTab
-                 isActiveTab={activeFilterTab(tab.name)}
+                 isActiveTab={activeFilterTab[tab.name]}
                  handleClick={() => handleActiveFilterTab(tab.name)}
                 />
           ))}
