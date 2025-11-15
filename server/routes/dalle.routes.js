@@ -1,38 +1,32 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 
 dotenv.config();
 
 const router = express.Router();
-const config = new Configuration({
+const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-const openai = new OpenAIApi(config);
-
-router.route('/').get((req, res) => {
-    res.status(200).json({ message: "Hello from DALL.E Routes" });
-});
-
-router.route('/').post(async (req, res) => {
+router.post('/', async (req, res) => {
     try {
-      const { prompt } = req.body;
-  
-      const response = await openai.createImage({
-        prompt,
-        n: 1,
-        size: '1024x1024',
-        response_format: 'b64_json'
-      });
-  
-      const image = response.data.data[0].b64_json;
-  
-      res.status(200).json({ photo: image });
+        const { prompt } = req.body;
+
+        const result = await openai.images.generate({
+            model: "gpt-image-1",   // updated model
+            prompt,
+            size: "1024x1024"
+        });
+
+        const base64Image = result.data[0].b64_json;
+
+        res.status(200).json({ photo: base64Image });
+
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Something went wrong" });
+        console.error("DALL·E error:", error);
+        res.status(500).json({ message: "Something went wrong", error: error.message });
     }
-  });
+});
 
 export default router;
